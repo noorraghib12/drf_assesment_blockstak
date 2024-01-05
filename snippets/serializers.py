@@ -24,3 +24,13 @@ class SnippetSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+class SnippetModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Snippet
+        fields= ['id','title','code','linenos','language','style']
+
+
+
+    def validate(self,data):
+        if len(data['code'])<10:
+            return serializer.ValidationError('Code Snippets should be atleast 10 characters long ')
