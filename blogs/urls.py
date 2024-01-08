@@ -5,5 +5,6 @@ from .views import *
 
 urlpatterns= [
     path('blogs/',BlogView.as_view()),
+    path('<str:username>/blogs/',PublicBlogView.as_view())
 ]
 # urlpatterns=format_suffix_patterns(urlpatterns)

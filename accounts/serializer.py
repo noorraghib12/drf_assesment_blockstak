@@ -38,7 +38,7 @@ class VerifyAccountSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=Profile
-        fields= "__all__"
+        fields= ['user_id','credit','address','profileimg']
 
 class LoginSerializer(serializers.Serializer):
     username=serializers.CharField()
@@ -46,6 +46,8 @@ class LoginSerializer(serializers.Serializer):
     def validate(self,data):
         if not User.objects.filter(username=data['username']).exists():
             raise serializers.ValidationError(f"Account not found.")
+        elif not (User.objects.filter(username=data['username']).first()).is_verified:
+            raise serializers.ValidationError(f"User {data['username']} is not verified yet. Please visit registered email for verification token.")
         return data
     
     def get_jwt_token(self,data):

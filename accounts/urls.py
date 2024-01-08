@@ -14,4 +14,6 @@ urlpatterns = [
     path('register/',RegisterAPI.as_view()),
     path('verify/',VerifyRegistrationAPI.as_view()),
     path('login/',LoginView.as_view()),
+    path('<str:username>/profile/', ProfileGetview.as_view()),
+    path('me/profile/setting/',ProfileWriteview.as_view())
 ]

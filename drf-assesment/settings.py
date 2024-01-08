@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'accounts',
-    'snippets',
     'blogs',
     
 ]
@@ -59,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'drf_tutorial.urls'
+ROOT_URLCONF = 'drf-assesment.urls'
 
 TEMPLATES = [
     {
@@ -77,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'drf_tutorial.wsgi.application'
+WSGI_APPLICATION = 'drf-assesment.wsgi.application'
 
 
 # Database
@@ -149,15 +148,18 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+from dotenv import load_dotenv
 
+load_dotenv()
 
-
+#USED TO SECURE SENSITIVE INFO
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'nuruldhaka24@gmail.com'
-EMAIL_HOST_PASSWORD = 'ztgo zydi nhgx odyr'
+EMAIL_HOST_USER = os.environ['SMTP_EMAIL']
+EMAIL_HOST_PASSWORD = os.environ['SMTP_PASSWORD']
+
 
 
 REST_FRAMEWORK = {

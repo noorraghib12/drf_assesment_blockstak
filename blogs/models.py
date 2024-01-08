@@ -3,7 +3,6 @@ from accounts.models import User
 import uuid
 # Create your models here.
 
-BLOG_TAGS=['sad','funny','educational','politics','tech']
 
 
 class BaseModel(models.Model):
@@ -19,7 +18,8 @@ class Blog(BaseModel):
     title=models.CharField(max_length=500)
     blog_text=models.TextField()
     image=models.ImageField(upload_to='blog_image')
-
+    class Meta:
+        ordering=['updated_at']
 
 
     def __str__(self):

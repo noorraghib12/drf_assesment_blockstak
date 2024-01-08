@@ -67,31 +67,106 @@ class VerifyRegistrationAPI(APIView):
 class LoginView(APIView):
     def post(self,request):
         serializer=LoginSerializer(data=request.data)
+
         if not serializer.is_valid():
             return Response({
                 'status':400,
                 'data':serializer.errors,
                 'message':"Something went wrong!"
             })
+        # if not User.object.get(data['username']).is_verified:
+        #     return Response({
+        #         'status':400,
+        #         'data':serializer.errors,
+        #         'message':"Sorry, user not verified!"
+        #     })
+
         response=serializer.get_jwt_token(data=request.data)
 
         return Response(response,status=200)
-class Profileview(APIView):
+
+
+class ProfileWriteview(APIView):
+    """ CRUD OPERATIONS FOR USER PROFILE"""
+
+
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]        
     def post(self,request):
         try:
-            data=request.data
-            data['user'] = request.user
+            data=request.data.copy()
+            data['user_id'] = request.user.id
             serializer=ProfileSerializer(data=data)
             if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data,status=status.HTTP_201_CREATED)
+                serializer.save() 
+                return Response({
+                    'status':400,
+                    'message':"Ooops, something went wrong!",
+                    'data': serializer.errors
+                })
             else:
                 return Response({
-                    'status':200,
+                    'status':400,
                     'message':"Ooops, something went wrong!",
                     'data': serializer.errors
                 })
         except Exception as e:
             print(e)
+            return Response({
+                'status': 400,
+                'message': "Ooops something went wrong",
+                'data':{'error':e}
+            })
+
+    def patch(self,request):
+        data=request.data.copy()
+        data['user_id']=request.user.id
+        serializer=ProfileSerializer(data=data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status":201,
+                "message":"Profile information has been updated!", 
+                "data":serializer.data
+            })
+        else:
+            return Response({
+                "status":400,
+                'message':"Sorry, there were some issues fetching the data!",
+                'data':serializer.data
+            })
+
+
+
+class ProfileGetview(APIView):
+    def get(self,request,username):
+        if username=='me':
+            profile=request.user.profile
+        else:
+            user=User.objects.filter(username=username)
+            if not user.exists():
+                return Response({
+                    'status':404,
+                    'message':f"No user named {username} exists within our database",
+                    'data':{}
+                })
+            
+            profile=user.first().profile
+        
+        if not profile.values():
+            return Response({
+                "status":404,
+                "message": "Sorry, this user has not updated their profile"
+            })
+        # profile_data=profile[0]
+        # profile_data['user']=request.user.id
+        profile=profile.values()[0]
+        
+        serializer=ProfileSerializer(profile)
+        # if serializer.is_valid():
+        return Response({
+            'status':200,
+            'message':"Profile fetched!",
+            'data':serializer.data
+        })
+

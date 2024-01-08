@@ -32,6 +32,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('',include('snippets.urls')),
-    path('account/',include('accounts.urls')),
-    path('home/',include('blogs.urls'))
+    path('',include('accounts.urls')),
+    path('',include('blogs.urls'))
 ]
