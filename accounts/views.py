@@ -95,9 +95,9 @@ class ProfileWriteview(APIView):
     def post(self,request):
         try:
             data=request.data.copy()
-            data['user_id'] = request.user.id
+            data['user'] = request.user.id
             serializer=ProfileSerializer(data=data)
-            if serializer.is_valid():
+            if not serializer.is_valid():
                 serializer.save() 
                 return Response({
                     'status':400,
@@ -106,9 +106,9 @@ class ProfileWriteview(APIView):
                 })
             else:
                 return Response({
-                    'status':400,
-                    'message':"Ooops, something went wrong!",
-                    'data': serializer.errors
+                    'status':200,
+                    'message':"Profile data created!",
+                    'data': serializer.data
                 })
         except Exception as e:
             print(e)
@@ -120,7 +120,7 @@ class ProfileWriteview(APIView):
 
     def patch(self,request):
         data=request.data.copy()
-        data['user_id']=request.user.id
+        data['user']=request.user.id
         serializer=ProfileSerializer(data=data,partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -141,28 +141,28 @@ class ProfileWriteview(APIView):
 class ProfileGetview(APIView):
     def get(self,request,username):
         if username=='me':
-            profile=request.user.profile
-        else:
-            user=User.objects.filter(username=username)
-            if not user.exists():
-                return Response({
-                    'status':404,
-                    'message':f"No user named {username} exists within our database",
-                    'data':{}
-                })
-            
-            profile=user.first().profile
+            username=request.user.username
         
-        if not profile.values():
+        user=User.objects.filter(username=username)
+        if not user.exists():
+            return Response({
+                'status':404,
+                'message':f"No user named {username} exists within our database",
+                'data':{}
+            })
+        
+        
+        profile=Profile.objects.filter(user=user.first())
+        if not profile.exists():
             return Response({
                 "status":404,
-                "message": "Sorry, this user has not updated their profile"
+                "message": "Sorry, this user has not updated their profile",
+                "data": e
             })
         # profile_data=profile[0]
         # profile_data['user']=request.user.id
-        profile=profile.values()[0]
         
-        serializer=ProfileSerializer(profile)
+        serializer=ProfileSerializer(profile.first())
         # if serializer.is_valid():
         return Response({
             'status':200,

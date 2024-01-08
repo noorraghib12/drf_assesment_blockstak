@@ -18,16 +18,11 @@ class PublicBlogView(APIView):
         """
         try:
             data=request.data
+
             #If search keyword provided : Only fetch blogs with search keyword
             if username=='me':
-                try: 
-                    blogs=request.user.blog
-                except Excpetion as e:
-                    return Response({
-                        'status':404,
-                        'message':"Sorry something went wrong! You may not be logged in or your login-token has expired",
-                        'data': e
-                    })
+                blogs=Blog.objects.filter(user=request.user)
+            
             else:
                 user=User.objects.filter(username=username)
                 if not user.exists():
@@ -35,8 +30,8 @@ class PublicBlogView(APIView):
                         'status':404,
                         'message': "Sorry, no user of this username exists"
                     })
-                
-                blogs=user.blog
+                    
+                blogs=Blog.objects.filter(user=user.first())
             if data.get('search'):
                 search = data.get('search')
                 blogs = blogs.filter(Q(title__icontains=search) | Q(blog_text__icontains=search)).all()
@@ -104,7 +99,8 @@ class BlogView(APIView):
         data=request.data
         #If UID provided in request : Only fetch specific blog
         #If search keyword provided : Only fetch blogs with search keyword
-        blogs=request.user.blog
+        blogs=Blog.objects.filter(user=request.user)
+        
         if data.get('search'):
             search = data.get('search')
             blogs = blogs.filter(Q(title__icontains=search) | Q(blog_text__icontains=search)).all()

@@ -38,7 +38,7 @@ class VerifyAccountSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=Profile
-        fields= ['user_id','credit','address','profileimg']
+        fields= ['user','credit','address','profileimg']
 
 class LoginSerializer(serializers.Serializer):
     username=serializers.CharField()
