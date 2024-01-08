@@ -7,6 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class RegisterAPI(APIView):
+    """
+    REGISTRATION API
+    """
+
     def post(self,request):
         data=request.data
         verification_serialized=RegisterSerializer(data=data)
@@ -27,6 +31,9 @@ class RegisterAPI(APIView):
 
 
 class VerifyRegistrationAPI(APIView):
+    """
+    VERIFY REGISTRATION API
+    """
     def post(self,request):
         verify_data=request.data
         verification_serialized=VerifyAccountSerializer(data=verify_data)
@@ -139,6 +146,9 @@ class ProfileWriteview(APIView):
 
 
 class ProfileGetview(APIView):
+    """
+    PUBLIC PROFILE VIEW 
+    """
     def get(self,request,username):
         if username=='me':
             username=request.user.username
