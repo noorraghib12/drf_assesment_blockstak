@@ -30,7 +30,7 @@ class Profile(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='profile')
     credit = models.FloatField()
     address = models.CharField(max_length=1000,blank=True)
-    profileimg = models.ImageField(upload_to='profile_images',default='blank-profile-picture.png')
+    profileimg = models.ImageField(upload_to='profile_images')
 
 
     def __str__(self):

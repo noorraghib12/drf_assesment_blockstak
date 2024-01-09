@@ -104,8 +104,7 @@ class ProfileWriteview(APIView):
             data=request.data.copy()
             data['user'] = request.user.id
             serializer=ProfileSerializer(data=data)
-            if not serializer.is_valid():
-                serializer.save() 
+            if not serializer.is_valid(): 
                 return Response({
                     'status':400,
                     'message':"Ooops, something went wrong!",
@@ -117,6 +116,7 @@ class ProfileWriteview(APIView):
                     'message':"Profile data created!",
                     'data': serializer.data
                 })
+                serializer.save()
         except Exception as e:
             print(e)
             return Response({
@@ -167,7 +167,7 @@ class ProfileGetview(APIView):
             return Response({
                 "status":404,
                 "message": "Sorry, this user has not updated their profile",
-                "data": e
+                "data": "Profile doesnt exist"
             })
         # profile_data=profile[0]
         # profile_data['user']=request.user.id
